@@ -1,0 +1,70 @@
+html {
+    background-color: #445;
+}
+
+input[type=time] {
+    background-color: transparent;
+    border: 0;
+    max-width: 8.2rem;
+}
+
+input[type=time]:hover {
+    background-color: rgba(100, 100, 100, 0.1);
+}
+
+td, th {
+    vertical-align: middle !important;
+    max-width: 8.2rem;
+}
+
+@media only screen and (max-width : 768px) {
+    td {
+        display:block; 
+        box-sizing:border-box; 
+        clear:both;
+        max-width: 100%;
+    }
+    th {
+        display: none;
+    }
+    .tt-total-th {
+        display: inherit;
+        display:block; 
+        box-sizing:border-box;
+        max-width: 100%;
+    }
+}
+
+.tt-is-borderless {
+    border: 0 !important;
+}
+
+.tt-has-cursor-default {
+    cursor: default !important;
+}
+
+.tt-no-padding-top {
+    padding-top: 0 !important;
+}
+
+.tt-no-padding-right {
+    padding-right: 0 !important;
+}
+
+.tt-no-padding-bottom {
+    padding-bottom: 0 !important;
+}
+
+.tt-no-padding-left {
+    padding-left: 0 !important;
+}
+
+.tt-has-border-left {
+    border-top: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+}
+
+.tt-is-hidden {
+    display: none !important;
+}

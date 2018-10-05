@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Time Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <section class="section">
+            <div class="columns">
+                <div class="column is-8-desktop is-offset-2-desktop">
+                    <div class="columns is-hidden-mobile">
+                        <div class="column">
+                            <p class="title has-text-light is-hidden-mobile">
+                                Time Tracker
+                            </p>
+                        </div>
+                        <div class="column is-narrow tt-no-padding-bottom tt-no-padding-right">
+                            <div class="field has-addons" :class="{'tt-is-hidden':newDateToggle[0]}">
+                                <div class="control">
+                                    <input type="date" class="input tt-is-borderless tt-no-pad-right" v-model="newDateValue">
+                                </div>
+                                <div class="control has-text-right">
+                                    <button class="button" title="Add new date" @click="addNewDate(newDateValue)">
+                                        <span class="icon">
+                                            <i class="far fa-lg fa-calendar-check"></i>
+                                        </span>
+                                        <span>
+                                            Add
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="field" :class="{'tt-is-hidden':newDateToggle[1]}">
+                                <div class="control has-text-right">
+                                    <button class="button tt-is-borderless" title="Show new date picker" @click="showDatePicker()">
+                                        <span class="icon">
+                                            <i class="far fa-lg fa-calendar-plus"></i>
+                                        </span>
+                                        <span>
+                                            New
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column is-narrow">
+                            <div class="field has-addons">
+                                <div class="control has-text-right">
+                                    <div class="select is-dark">
+                                        <select class="has-text-centered tt-is-borderless" v-model="selectedEntry" @change="loadActiveEntry">
+                                            <option disabled>Select Date</option>
+                                            <option v-for="(value, key, index) in entries" :value="key">
+                                                {{convertDate(key)}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="control">
+                                    <button class="button tt-has-border-left" :class="{'is-static':disableButton}" title="Delete current date." @click="deleteDate(selectedEntry)">
+                                        <span class="icon has-text-danger">
+                                            <i class="fas fa-lg fa-times"></i>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table is-striped is-fullwidth">
+                        <thead>
+                            <tr>
+                                <th class="has-text-centered is-primary">
+                                    Type
+                                </th>
+                                <th class="has-text-centered is-primary">
+                                    Start
+                                </th>
+                                <th class="has-text-centered is-primary">
+                                    End
+                                </th>
+                                <th class="has-text-centered is-primary">
+                                    Hours
+                                </th>
+                                <th class="has-text-centered is-primary">
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="is-hidden-tablet">
+                                <td class="has-text-centered is-primary">
+                                    <p class="title is-size-3 has-text-white">
+                                        Time Tracker
+                                    </p>
+
+                                    <div class="field has-addons is-inline-flex" :class="{'tt-is-hidden':newDateToggle[0]}">
+                                        <div class="control">
+                                            <input type="date" class="input tt-is-borderless tt-no-pad-right" v-model="newDateValue">
+                                        </div>
+                                        <div class="control has-text-right">
+                                            <button class="button" title="Add new date" @click="addNewDate(newDateValue)">
+                                                <span class="icon">
+                                                    <i class="far fa-lg fa-calendar-check"></i>
+                                                </span>
+                                                <span>
+                                                    Add
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="field is-inline-flex" :class="{'tt-is-hidden':newDateToggle[1]}">
+                                        <div class="control has-text-right">
+                                            <button class="button tt-is-borderless" title="Show new date picker" @click="showDatePicker()">
+                                                <span class="icon">
+                                                    <i class="far fa-lg fa-calendar-plus"></i>
+                                                </span>
+                                                <span>
+                                                    New
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="field has-addons is-inline-flex">
+                                        <div class="control has-text-right">
+                                            <div class="select is-dark">
+                                                <select class="has-text-centered tt-is-borderless" v-model="selectedEntry" @change="loadActiveEntry">
+                                                    <option disabled>Select Date</option>
+                                                    <option v-for="(value, key, index) in entries" :value="key">
+                                                        {{convertDate(key)}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="control">
+                                            <button class="button tt-has-border-left" :class="{'is-static':disableButton}" title="Delete current date." @click="deleteDate(selectedEntry)">
+                                                <span class="icon has-text-danger">
+                                                    <i class="fas fa-lg fa-times"></i>
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                    <div class="field has-addons is-inline-flex">
+                                        <div class="control">
+                                            <button class="button" :class="{'is-static':disableButton}" title="Save current entries" @click="saveEntry(selectedEntry)">
+                                                <span class="icon has-text-primary">
+                                                    <i class="fas fa-lg fa-save"></i>
+                                                </span>
+                                                <span>
+                                                    Save
+                                                </span>
+                                            </button>
+                                        </div>
+                                        <div class="control">
+                                            <button class="button" :class="{'is-static':disableButton}" title="Reset entries" @click="resetDate()">
+                                                <span class="icon">
+                                                    <i class="fas fa-lg fa-undo-alt"></i>
+                                                </span>
+                                                <span>
+                                                    Reset
+                                                </span>
+                                            </button>
+                                        </div>
+                                        <div class="control">
+                                            <button class="button" :class="{'is-static':disableButton}" title="Clear all entries" @click="clearAllRows(true)">
+                                                <span class="icon">
+                                                    <i class="far fa-lg fa-trash-alt"></i>
+                                                </span>
+                                                <span>
+                                                    Clear
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr v-for="(row, index) in activeEntry" :key="index">
+                                <td>
+                                    <div class="control has-text-centered">
+                                        <input type="text" class="input is-shadowless is-marginless has-text-centered" placeholder="Type" title="Input type" v-model.lazy="row.type">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="control has-text-centered">
+                                        <input type="time" class="input is-shadowless" v-model="row.start">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="control has-text-centered">
+                                        <input type="time" class="input is-shadowless" v-model="row.end">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="control has-text-centered">
+                                        {{rowHours(row)}}
+                                    </div>
+                                </td>
+                                <td id="icon-column">
+                                    <div class="control has-text-centered">
+                                        <a class="icon has-text-primary" @click="addRow(index)" title="Add row below.">
+                                            <i class="fas fa-lg fa-plus-circle"></i>
+                                        </a>
+                                        <a class="icon has-text-danger" @click="delRow(index)" title="Delete row.">
+                                            <i class="fas fa-lg fa-times-circle"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <td class="is-hidden-tablet"></td>
+                        </tbody>
+                        <tfoot class="is-hidden-mobile">
+                            <tr>
+                                <th class="is-primary has-text-centered tt-total-th">
+                                    Total:
+                                </th>
+                                <th class="is-primary">
+                                </th>
+                                <th class="is-primary has-text-centered">
+                                </th>
+                                <th class="is-primary has-text-centered tt-total-th">
+                                    {{totalHours}}
+                                </th>
+                                <th class="is-primary">
+                                </th>
+                            </tr>
+                        </tfoot>
+                        <tfoot class="is-hidden-tablet">
+                            <tr>
+                                <th class="is-primary has-text-centered tt-total-th">
+                                    Total Hours: {{totalHours}}
+                                </th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <div class="columns">
+                        <div class="column is-narrow">
+                            <div class="field has-addons">
+                                <div class="control">
+                                    <div class="select is-dark">
+                                        <select class="has-text-centered tt-is-borderless" v-model="filterSelect">
+                                            <option disabled>Select Type</option>
+                                            <option v-for="(type, index) in entryTypes" :value="type">{{type}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="control">
+                                    <span class="button tt-has-cursor-default tt-is-borderless">
+                                        {{filterHours(filterSelect)}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column is-hidden-mobile"></div>
+                        <div class="column is-narrow is-hidden-mobile">
+                            <div class="field has-addons">
+                                <div class="control">
+                                    <button class="button" :class="{'is-static':disableButton}" title="Save entries" @click="saveEntry(selectedEntry)">
+                                        <span class="icon has-text-primary">
+                                            <i class="fas fa-lg fa-save"></i>
+                                        </span>
+                                        <span>
+                                            Save
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="control">
+                                    <button class="button" :class="{'is-static':disableButton}" title="Reset entries" @click="resetDate()">
+                                        <span class="icon">
+                                            <i class="fas fa-lg fa-undo-alt"></i>
+                                        </span>
+                                        <span>
+                                            Reset
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="control">
+                                    <button class="button" title="Clear all entries" @click="clearAllRows(true)">
+                                        <span class="icon">
+                                            <i class="far fa-lg fa-trash-alt"></i>
+                                        </span>
+                                        <span>
+                                            Clear
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="columns">
+                        <div class="column has-text-right">
+                            <div class="field is-grouped is-inline-flex" :class="{'tt-is-hidden':exportToggle[1]}">
+                                <div class="control">
+                                    <button class="button" @click="toggleExport()">
+                                        Export Data
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="field is-grouped is-inline-flex" :class="{'tt-is-hidden':exportToggle[0]}">
+                                <div class="control">
+                                    <button class="button" @click="exportData()">
+                                        Export
+                                    </button>
+                                </div>
+                                <div class="control">
+                                    <button class="button" @click="toggleExport()">
+                                        Hide
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="field" :class="{'tt-is-hidden':exportToggle[0]}">
+                                <div class="control">
+                                    <textarea class="textarea" cols="512" rows="8" placeholder="JSON Data" v-model="exportTextData"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>
